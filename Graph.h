@@ -11,49 +11,35 @@ template<class T>
 class Graph{
 	private:
 		struct VertexStuff{
-			int id;
-			T data;
-			double cost;
-			std::vector<int> vertices;
-			std::vector<int> verticesParent;
+			int id; //the index it is held at in the map
+			T data; //data given to us by the user
+			double cost; //cost in time give from user
+			std::vector<int> vertices; //where this node points out ot list
+			std::vector<int> verticesParent; //what points at this node list
 
-			VertexStuff(T d, double c, int i){
+			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
 				data = d;
 				cost = c;
 				vertices = std::vector<int>();
 				verticesParent = std::vector<int>();
 			}
-			VertexStuff(){
-				//oof
-				// vertices = std::vector<int>();
-				// verticesParent = std::vector<int>();
+			VertexStuff(){//Needed for map RB_tree
 			}
 		};
-		int ID = 1;
+		int ID = 1;//ID couinter that the add vertex uses
 
-		std::map<int, VertexStuff> v;
-		//std::vector<VertexStuff> v;
-		//std::map<int, std::vector<int>> vertices;
-		//std::map<int, std::vector<int>> verticesParent;
+		std::map<int, VertexStuff> v;//main map that holds all nodes with their meta data
 
 	public:
 		Graph();
-		//Graph(Graph&);
-		//Graph& operator=(Graph&);
-		//~Graph();
 
 		std::vector<T> findStarts();//Finds all vertices that are starting points/dont have anything pointing to it
 		std::vector<T> findEnd(); //Finds the end of the jobs/where to stop
 
-		//void addData(std::string);//takes in file name and adds all the data from the file into the map
-
-		//std::map<int, std::vector<T>> findPath();//TODO This is the hard part bois, we fins all paths and rank them 1 being the best and n being the worst
-
 		void addVertex(T,double);
 		void addEdge(T,T);
 		void print();
-		// void printBfs(T);
 };
 
 #include "Graph.cpp"
