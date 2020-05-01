@@ -30,7 +30,7 @@ class Graph{
 			int start;
 			int finish;
 
-			VertexStuff(T d, double c, int i){//constructor for new edges\
+			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
 				data = d;
 				cost = c;
@@ -48,6 +48,10 @@ class Graph{
 
 		void PaddEdge(int,int);//Private addition of adding edge
 
+		std::vector<std::pair<int, T>> reverseTopoSort(); // Returns a reverse topological ordering of the graph as a vector
+		std::vector<std::pair<int, T>> topoSort(); // Returns a topological sort of the graph as a vector
+		void computeTLevel(); // Computes the T level of the graph
+		void computeBLevel(); // Computes the B level of the graph
 	public:
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir
@@ -65,7 +69,6 @@ class Graph{
 		void print();
 		void DFS();
 		void DFS_Visit(int);
-		void topologicalSort();
 		void SCCDFS_Visit(int node);
 		void SCC();
 };

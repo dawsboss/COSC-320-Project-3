@@ -2,6 +2,7 @@
 
 
 int main(){
+/*
 	Graph<int> t;
 	t.addVertex(5,1);
 	t.addEdge(5,5);
@@ -165,9 +166,26 @@ int main(){
 	//tester.addData("data.txt");
 
 
-
-
-
+*/
+	Graph<int> i;
+	i.addVertex(2, 4);
+	i.addVertex(3, 8);
+	i.addVertex(5, 30);
+	i.addVertex(1, 9);
+	i.addVertex(6, 1);
+	i.addEdge(5, 6);
+	i.addEdge(2, 3);
+	i.addEdge(2, 5);
+	i.addEdge(2, 1);
+	i.addEdge(5, 3);
+	i.addEdge(1, 6);
+/*
+	std::vector<std::pair<int, int>> yeet = i.topologicalSort();
+	for (std::vector<std::pair<int, int>>::iterator i = yeet.begin(); i != yeet.end(); ++i) {
+		std::cout << i->first << " " << i->second;
+		std::cout << std::endl;
+	}
+*/	
 
 
 

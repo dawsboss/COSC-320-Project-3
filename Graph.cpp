@@ -179,24 +179,72 @@ void Graph<T>::DFS_Visit(int node){
 	v[node].finish=time;
 }
 
+/*
+   reverseTopoSort Function:
+   Returns a topological sort of the current graph
+*/
 template<class T>
-void Graph<T>::topologicalSort(){
+std::vector<std::pair<int, T>> Graph<T>::reverseTopoSort() {
 	DFS();
 	if(!DAG){
-		std::cout<<"Graph is not a DAG! Can't topologicalSort..."<<std::endl;
-		return;
+		throw std::runtime_error("Graph is not a DAG! Can't topologicalSort...");
 	}
 
-	std::map<int,T> topolist;
+	std::vector<std::pair<int,T>> topoList;
 
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		topolist.insert(std::pair<int,T>(i->second.finish,i->second.data));
+		topoList.push_back(std::pair<int,T>(i->second.finish,i->second.data));
+	}
+	std::sort(topoList.begin(), topoList.end());
+	
+	return topoList;
+}
+
+/*
+   topoSort Function:
+   Returns a reverse topological sort of the current graph
+*/
+template<class T>
+std::vector<std::pair<int, T>> Graph<T>::topoSort(){
+	DFS();
+	if(!DAG){
+		throw std::runtime_error("Graph is not a DAG! Can't topologicalSort...");
 	}
 
+	std::vector<std::pair<int,T>> topoList;
+
+	for(auto i=v.begin(); i!=v.end(); ++i){
+		topoList.push_back(std::pair<int,T>(i->second.finish,i->second.data));
+	}
+
+	/*
 	for(auto i=topolist.rbegin(); i!=topolist.rend(); ++i){
 		std::cout<<i->second<<" time "<<i->first<<"| ";
 	}
 	std::cout<<std::endl;
+	*/
+	std::sort(topoList.begin(), topoList.end());
+	std::reverse(topoList.begin(), topoList.end());
+
+	return topoList;
+}
+
+/*
+   computeTLevel Function:
+   Computes the T level of the graph 
+*/
+template<class T>
+void Graph<T>::computeTLevel() {
+
+}
+
+/*
+   computeBLevel Function:
+   Computes the B level of the graph
+*/
+template<class T>
+void Graph<T>::computeBLevel() {
+
 }
 
 template<class T>
@@ -231,3 +279,5 @@ void Graph<T>::SCCDFS_Visit(int node){
 	time++;
 	std::cout<<v[node].data<<" ";
 }
+
+
