@@ -131,6 +131,12 @@ void Graph<T>::print(){
 		}
 		std::cout<<std::endl;
 	}
+
+	for (auto i = v.begin(); i != v.end(); ++i) {
+		std::cout << "Vector: " << v[i->first].data << std::endl;
+		std::cout << "T-Level: " << v[i->first].tLevel << std::endl;
+		std::cout << "B-Level: " << v[i->first].bLevel << std::endl;
+	}
 }
 
 template<class T>
@@ -184,16 +190,16 @@ void Graph<T>::DFS_Visit(int node){
    Returns a topological sort of the current graph
 */
 template<class T>
-std::vector<std::pair<int, T>> Graph<T>::reverseTopoSort() {
+std::vector<std::pair<int, int>> Graph<T>::reverseTopoSort() {
 	DFS();
 	if(!DAG){
 		throw std::runtime_error("Graph is not a DAG! Can't topologicalSort...");
 	}
 
-	std::vector<std::pair<int,T>> topoList;
+	std::vector<std::pair<int,int>> topoList;
 
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		topoList.push_back(std::pair<int,T>(i->second.finish,i->second.data));
+		topoList.push_back(std::pair<int,int>(i->second.finish,i->second.id));
 	}
 	std::sort(topoList.begin(), topoList.end());
 	
@@ -205,16 +211,16 @@ std::vector<std::pair<int, T>> Graph<T>::reverseTopoSort() {
    Returns a reverse topological sort of the current graph
 */
 template<class T>
-std::vector<std::pair<int, T>> Graph<T>::topoSort(){
+std::vector<std::pair<int, int>> Graph<T>::topoSort(){
 	DFS();
 	if(!DAG){
 		throw std::runtime_error("Graph is not a DAG! Can't topologicalSort...");
 	}
 
-	std::vector<std::pair<int,T>> topoList;
+	std::vector<std::pair<int,int>> topoList;
 
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		topoList.push_back(std::pair<int,T>(i->second.finish,i->second.data));
+		topoList.push_back(std::pair<int,int>(i->second.finish,i->second.id));
 	}
 
 	/*
@@ -235,7 +241,17 @@ std::vector<std::pair<int, T>> Graph<T>::topoSort(){
 */
 template<class T>
 void Graph<T>::computeTLevel() {
-
+	std::vector<std::pair<int, int>> TopList = topoSort();
+	int max;
+	for (std::vector<std::pair<int, int>>::iterator it = TopList.begin(); it != TopList.end(); ++it) {
+		max = 0;
+		for (std::vector<int>::iterator i = v[it->second].verticesParent.begin(); i != v[it->second].verticesParent.end(); ++i) {
+			if ((v[*i].tLevel + v[*i].cost) > max) {
+				max = v[*i].tLevel + v[*i].cost;
+			}
+		}
+		v[it->second].tLevel = max;
+	}
 }
 
 /*
@@ -244,7 +260,20 @@ void Graph<T>::computeTLevel() {
 */
 template<class T>
 void Graph<T>::computeBLevel() {
-
+	std::vector<std::pair<int, int>> RevTopList = reverseTopoSort();
+	int max;
+	for (auto it = RevTopList.begin(); it != RevTopList.end(); ++it) {
+		std::cout << "Vector ID: " << v[it->second].data << " Finish Time: " << it->first << std::endl;
+	}
+	for (std::vector<std::pair<int, int>>::iterator it = RevTopList.begin(); it != RevTopList.end(); ++it) {
+		max = 0;
+		for (std::vector<int>::iterator i = v[it->second].vertices.begin(); i != v[it->second].vertices.end(); ++i) {
+			if (v[*i].bLevel > max) {
+				max = v[*i].bLevel;
+			}
+		}
+		v[it->second].bLevel = v[it->second].cost + max;
+	}
 }
 
 template<class T>

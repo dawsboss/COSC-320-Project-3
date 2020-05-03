@@ -29,6 +29,8 @@ class Graph{
 			int P;
 			int start;
 			int finish;
+			int tLevel;
+			int bLevel;
 
 			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
@@ -38,6 +40,8 @@ class Graph{
 				verticesParent = std::vector<int>();
 				color = WHITE;
 				P=-1;
+				tLevel = 0;
+				bLevel = 0;
 			}
 			VertexStuff(){//Needed for map RB_tree
 			}
@@ -48,11 +52,11 @@ class Graph{
 
 		void PaddEdge(int,int);//Private addition of adding edge
 
-		std::vector<std::pair<int, T>> reverseTopoSort(); // Returns a reverse topological ordering of the graph as a vector
-		std::vector<std::pair<int, T>> topoSort(); // Returns a topological sort of the graph as a vector
+		std::vector<std::pair<int, int>> reverseTopoSort(); // Returns a reverse topological ordering of the graph as a vector
+		std::vector<std::pair<int, int>> topoSort(); // Returns a topological sort of the graph as a vector
+	public:
 		void computeTLevel(); // Computes the T level of the graph
 		void computeBLevel(); // Computes the B level of the graph
-	public:
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir
 		void initDIR(bool);//This will init dir to give in bool
