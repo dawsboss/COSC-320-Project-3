@@ -179,11 +179,8 @@ int main(){
 	i.addEdge(2, 1);
 	i.addEdge(5, 3);
 	i.addEdge(1, 6);
-	i.computeTLevel();
-	i.computeBLevel();
 
-	i.print();
-	
+	i.printAnalytics();	
 	
 /*
 	std::vector<std::pair<int, int>> yeet = i.topologicalSort();

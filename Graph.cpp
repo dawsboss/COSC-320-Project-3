@@ -243,6 +243,7 @@ template<class T>
 void Graph<T>::computeTLevel() {
 	std::vector<std::pair<int, int>> TopList = topoSort();
 	int max;
+	CP_Length = 0;
 	for (std::vector<std::pair<int, int>>::iterator it = TopList.begin(); it != TopList.end(); ++it) {
 		max = 0;
 		for (std::vector<int>::iterator i = v[it->second].verticesParent.begin(); i != v[it->second].verticesParent.end(); ++i) {
@@ -251,6 +252,9 @@ void Graph<T>::computeTLevel() {
 			}
 		}
 		v[it->second].tLevel = max;
+		if (max > CP_Length) {
+			CP_Length = max + v[it->second].cost;
+		}
 	}
 }
 
@@ -262,9 +266,6 @@ template<class T>
 void Graph<T>::computeBLevel() {
 	std::vector<std::pair<int, int>> RevTopList = reverseTopoSort();
 	int max;
-	for (auto it = RevTopList.begin(); it != RevTopList.end(); ++it) {
-		std::cout << "Vector ID: " << v[it->second].data << " Finish Time: " << it->first << std::endl;
-	}
 	for (std::vector<std::pair<int, int>>::iterator it = RevTopList.begin(); it != RevTopList.end(); ++it) {
 		max = 0;
 		for (std::vector<int>::iterator i = v[it->second].vertices.begin(); i != v[it->second].vertices.end(); ++i) {
@@ -273,6 +274,42 @@ void Graph<T>::computeBLevel() {
 			}
 		}
 		v[it->second].bLevel = v[it->second].cost + max;
+	}
+}
+
+/*
+   computeALAP Function:
+   Computes the As Late As Possible metadate for each node in the graph
+*/
+template<class T>
+void Graph<T>::computeALAP() {
+	std::vector<std::pair<int, int>> RevTopList = reverseTopoSort();
+	int min_ft;
+	for (std::vector<std::pair<int, int>>::iterator it = RevTopList.begin(); it != RevTopList.end(); ++it) {
+		min_ft = CP_Length;
+		for (std::vector<int>::iterator i = v[it->second].vertices.begin(); i != v[it->second].vertices.end(); ++i) {
+			if ((v[*i].ALAPLevel) < min_ft) {
+				min_ft = v[*i].ALAPLevel;
+			}
+		}
+		v[it->second].ALAPLevel = min_ft - v[it->second].cost;
+	}
+}
+
+/*
+   printAnalytics Function:
+   Prints the Analytics of the graph into a data table structure
+*/
+template<class T>
+void Graph<T>::printAnalytics() {
+	computeTLevel();
+	computeBLevel();
+	computeALAP();
+	std::cout << "Id\t" << "Data\t" << "t-level\t" << "b-level\t" << "ALAP\t" << std::endl;
+	std::cout << "-----------------------------------------" << std::endl;
+	for (auto it = v.begin(); it != v.end(); ++it) {
+		std::cout << it->second.id << "\t" << it->second.data << "\t" << it->second.tLevel << "\t";
+		std::cout << it->second.bLevel << "\t" << it->second.ALAPLevel << std::endl;
 	}
 }
 

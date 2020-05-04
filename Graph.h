@@ -31,6 +31,7 @@ class Graph{
 			int finish;
 			int tLevel;
 			int bLevel;
+			int ALAPLevel;
 
 			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
@@ -48,15 +49,18 @@ class Graph{
 		};
 		int ID = 1;//ID couinter that the add vertex uses
 
+		int CP_Length;
+
 		std::map<int, VertexStuff> v;//main map that holds all nodes with their meta data
 
 		void PaddEdge(int,int);//Private addition of adding edge
 
 		std::vector<std::pair<int, int>> reverseTopoSort(); // Returns a reverse topological ordering of the graph as a vector
 		std::vector<std::pair<int, int>> topoSort(); // Returns a topological sort of the graph as a vector
-	public:
 		void computeTLevel(); // Computes the T level of the graph
 		void computeBLevel(); // Computes the B level of the graph
+		void computeALAP(); // Computes the As Late As Possible level of the graph
+	public:
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir
 		void initDIR(bool);//This will init dir to give in bool
@@ -75,6 +79,7 @@ class Graph{
 		void DFS_Visit(int);
 		void SCCDFS_Visit(int node);
 		void SCC();
+		void printAnalytics(); // Prints the Analytics of the graph into a data table structure
 };
 
 #include "Graph.cpp"
