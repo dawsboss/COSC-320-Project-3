@@ -24,8 +24,8 @@ void Graph<T>::graphType(){
 
 //Finds all vertices that are starting points/dont have anything pointing to it
 template<class T>
-std::vector<T> Graph<T>::findStarts(){
-	std::vector<T> rtn;
+std::vector<int> Graph<T>::findStarts(){
+	std::vector<int> rtn;
 	for( auto i=v.begin(); i!=v.end(); ++i){
 		if(i->second.verticesParent.empty()){//If a node has nothing point to it as a vertex then it is a "start"
 			rtn.push_back(i->first);
@@ -37,8 +37,8 @@ std::vector<T> Graph<T>::findStarts(){
 
 //Finds the end of the jobs/where to stop
 template<class T>
-std::vector<T> Graph<T>::findEnd(){
-	std::vector<T> rtn;
+std::vector<int> Graph<T>::findEnd(){
+	std::vector<int> rtn;
 	for( auto i=v.begin(); i!=v.end(); ++i){
 		if(i->second.vertices.empty()){//If a node doesn;t have any verteces then it is a "end"
 			rtn.push_back(i->first);
@@ -202,7 +202,7 @@ std::vector<std::pair<int, int>> Graph<T>::reverseTopoSort() {
 		topoList.push_back(std::pair<int,int>(i->second.finish,i->second.id));
 	}
 	std::sort(topoList.begin(), topoList.end());
-	
+
 	return topoList;
 }
 
@@ -237,7 +237,7 @@ std::vector<std::pair<int, int>> Graph<T>::topoSort(){
 
 /*
    computeTLevel Function:
-   Computes the T level of the graph 
+   Computes the T level of the graph
 */
 template<class T>
 void Graph<T>::computeTLevel() {
@@ -347,3 +347,73 @@ void Graph<T>::SCCDFS_Visit(int node){
 }
 
 
+
+//BFS : This will return the BFS levels starting from the B node, a index for each level of the BFS with a voector for each level to hold all the indexs for that level
+template<class T>
+std::map<int,std::vector<int>> Graph<T>::BFS(T B){
+
+	std::map<int,std::vector<int>> rtn;
+	int farthest=0;
+
+	for(auto i=v.begin(); i!=v.end(); ++i){
+		v[i->first].colorBFS = WHITE;
+		v[i->first].distanceBFS = -1;
+		v[i->first].P=-1;
+	}
+	auto S=v.begin();
+	for(auto i=v.begin(); i!=v.end(); ++i){//change this to stwitch back to parameters as indexs
+		if(v[i->first].data == B){
+			S = i;
+			break;
+		}else{
+			std::string s = "Entered node not valid";
+			throw s;
+		}
+	}
+
+	v[S->first].colorBFS = GREY;
+	v[S->first].distanceBFS = 0;
+
+	std::queue<int> q;
+	q.push(S->first);
+	while(!q.empty()){
+		int U = q.front();q.pop();
+		for(auto j=v[U].vertices.begin(); j!=v[U].vertices.end(); ++j){
+				std::cout<<"Node "<<U<<" edge: "<<*j<<std::endl;
+			if(v[*j].colorBFS == WHITE){
+				v[*j].colorBFS = GREY;
+				v[*j].distanceBFS = v[U].distanceBFS+1;
+				if(farthest < v[*j].distanceBFS)
+					farthest = v[*j].distanceBFS;
+				v[*j].P = U;
+				q.push(*j);
+			}
+			v[*j].colorBFS = BLACK;
+		}
+	}
+
+	//std::cout<<"Farthest: "<<farthest<<std::endl;
+	for(int i=0; i<=farthest; i++){//Takes all calulated data and saves what nodes were in what level of distance form the starting node and returns them in a map listed above
+		rtn.insert(std::pair<int, std::vector<int>>(i, std::vector<int>()));
+	}
+	for(auto i=v.begin(); i!=v.end(); ++i){
+		//std::cout<<"test: "<<v[i->first].distanceBFS<<" "<<i->first<<std::endl;
+		rtn[v[i->first].distanceBFS].push_back(i->first);
+	}
+
+	// std::cout<<"Starting at: "<<B<<std::endl;
+	// for(auto i=v.begin(); i!=v.end(); ++i){
+	// 	if(v[i->first].P == -1){
+	// 			std::cout<<"Node: "<<v[i->first].data<< " distance: "<<v[i->first].distanceBFS<< " parent: No Parents"<<std::endl;
+	// 	}else{
+	// 			std::cout<<"Node: "<<v[i->first].data<< " distance: "<<v[i->first].distanceBFS<< " parent: "<<v[v[i->first].P].data<<std::endl;
+	// 	}
+	// }
+	return rtn;
+}
+
+
+template<class T>
+void Graph<T>::driver(){
+
+}

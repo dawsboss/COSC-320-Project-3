@@ -26,6 +26,8 @@ class Graph{
 			std::vector<int> vertices; //where this node points out ot list
 			std::vector<int> verticesParent; //what points at this node list
 			color_t color;
+			color_t colorBFS;
+			int distanceBFS;
 			int P;
 			int start;
 			int finish;
@@ -40,6 +42,7 @@ class Graph{
 				vertices = std::vector<int>();
 				verticesParent = std::vector<int>();
 				color = WHITE;
+				colorBFS=WHITE;
 				P=-1;
 				tLevel = 0;
 				bLevel = 0;
@@ -60,7 +63,10 @@ class Graph{
 		void computeTLevel(); // Computes the T level of the graph
 		void computeBLevel(); // Computes the B level of the graph
 		void computeALAP(); // Computes the As Late As Possible level of the graph
+		void driver();
+
 	public:
+		std::map<int,std::vector<int>> BFS(T B);
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir
 		void initDIR(bool);//This will init dir to give in bool
@@ -69,8 +75,8 @@ class Graph{
 		void graphType();
 
 
-		std::vector<T> findStarts();//Finds all vertices that are starting points/dont have anything pointing to it
-		std::vector<T> findEnd(); //Finds the end of the jobs/where to stop
+		std::vector<int> findStarts();//Finds all vertices that are starting points/dont have anything pointing to it, returns the index of all starts in a vector
+		std::vector<int> findEnd(); //Finds the end of the jobs/where to stop, returns the index of all ends in a vector
 
 		void addVertex(T,double);
 		void addEdge(T,T);

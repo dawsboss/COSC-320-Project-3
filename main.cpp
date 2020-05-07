@@ -180,15 +180,23 @@ int main(){
 	i.addEdge(5, 3);
 	i.addEdge(1, 6);
 
-	i.printAnalytics();	
-	
+	i.printAnalytics();
+	std::cout<<std::endl;
+	std::map<int,std::vector<int>> BFStest = i.BFS(2);
+	for(auto t=BFStest.begin(); t!=BFStest.end(); ++t){
+		for(auto tt=t->second.begin(); tt!=t->second.end(); ++tt){
+			std::cout << *tt << " ";
+		}
+		std::cout<<std::endl;
+	}
+
 /*
 	std::vector<std::pair<int, int>> yeet = i.topologicalSort();
 	for (std::vector<std::pair<int, int>>::iterator i = yeet.begin(); i != yeet.end(); ++i) {
 		std::cout << i->first << " " << i->second;
 		std::cout << std::endl;
 	}
-*/	
+*/
 
 
 
