@@ -86,9 +86,7 @@ void Graph<T>::PaddEdge(int Parent, int child){
 template<class T>//TODO fix this stuff (5,5)edge case
 void Graph<T>::addEdge(T Parent, T child){
 	int p=-1, c=-1;
-	 //std::cout<<"Parent/child "<<Parent<<" "<<child<<"\n";
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		// std::cout<<"i->second.data "<<i->first<<" "<<i->second.data<<std::endl;
 		if(i->second.data == Parent)
 			p=i->first;
 		if(i->second.data == child)
@@ -167,11 +165,9 @@ void Graph<T>::DFS(){
 template<class T>
 void Graph<T>::DFS_Visit(int node){
 	time++;
-	//std::cout<<"time: "<<time<<" node: "<<node<<" "<<v[node].data<<std::endl;
 	v[node].start=time;
 	v[node].color=GREY;
 	for(auto i=v[node].vertices.begin(); i!=v[node].vertices.end(); ++i){
-		//std::cout<<"!!!!"<<v[node].color<<" node: "<<node<<" "<<v[node].data<<std::endl;
 		if(v[*i].color == GREY)
 			Acyclic=false;
 		if(v[*i].color == WHITE){
@@ -181,7 +177,6 @@ void Graph<T>::DFS_Visit(int node){
 	}
 	v[node].color=BLACK;
 	time++;
-	//std::cout<<"====time: "<<time<<" node: "<<node<<" "<<v[node].data<<std::endl;
 	v[node].finish=time;
 }
 
@@ -323,7 +318,6 @@ void Graph<T>::SCC(){
 	}
 	time=0;
 	for(auto i=topolist.rbegin(); i!=topolist.rend(); ++i){
-		//std::cout<<"Checking: "<<i->second<<std::endl;
 		if(v[i->second].color == WHITE){
 			SCCDFS_Visit(i->second);
 		}
@@ -406,8 +400,42 @@ void Graph<T>::JobLevelBFS(){
 
 
 template<class T>
-void Graph<T>::driver(){
+void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and divide it to the number of CPU/Workers we have that the user tell us in the paremeter
+	int time=0;
+	computeALAP();
 	JobLevelBFS();
-	
+	CPUs.clear();
+	for(int i=1; i<=numofCPU; i++){
+		CPUs.insert(std::pair<int, std::vector<CPUStruct>>(i,std::vector<CPUStruct>()));// or get rid of this second loine and just make the first into:
+		CPUs[CPUs.begin()->first].push_back(CPUStruct());//                               CPUs.insert(std::pair<int, std::vector<CPUStruct>>(i,std::vector<CPUStruct>({CPUStruct()})));
+	}
+
+
+	int smallestALAP;
+	for(auto i=jobs.begin(); i!=jobs.end(); ++i){
+		smallestALAP = v[*jobs[i->first].begin()].ALAPLevel;
+		for(auto j=jobs[i->first].begin(); j!=jobs[i->first].end(); ++j){
+			if(smallestALAP > v[*j].ALAPLevel || !v[*j].done){
+				smallestALAP = v[*j].ALAPLevel;
+			}
+		}
+		auto nextCPU = CPUs.begin();//assume that the next CPU will be the first, then lets check
+		for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){//Assumes that what ever is being given to it must be done so finds the next CPU available
+			std::cout<<"Working on: "<<i->first<<std::endl;
+			if(nextCPU->second.back().finish > j->second.back().finish){
+				nextCPU = j;
+			}
+		}
+		CPUs[nextCPU->first].push_back(CPUStruct(time,time+v[smallestALAP].cost,smallestALAP));//TODO fix time
+		v[smallestALAP].done = true;
+	}
+
+	for(auto i=CPUs.begin(); i!=CPUs.end(); ++i){
+		std::cout<<"CPU "<<i->first<<" Completed: ";
+		for(auto j=CPUs[i->first].begin(); j!=CPUs[i->first].end(); ++j){
+			std::cout<<j->IDdone<<" ";
+		}
+		std::cout<<std::endl;
+	}
 
 }

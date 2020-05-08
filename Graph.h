@@ -20,21 +20,22 @@ class Graph{
 			WHITE, GREY, BLACK
 		};
 		struct VertexStuff{
-			int id; //the index it is held at in the map
-			T data; //data given to us by the user
-			double cost; //cost in time give from user
-			std::vector<int> vertices; //where this node points out ot list
-			std::vector<int> verticesParent; //what points at this node list
-			color_t color;//DFS: color for current node
-			color_t colorBFS;//BFS: color for cuurent node / Probabily could just be color instead of a new variable...
-			int distanceBFS=-1;//BFS: distance form start node
-			int P;//used as parent index place holder for BFs and DFS
-			int start;//DFS: holds time when started in DFS algorithm
-			int finish;//DFS: holdstime when finished in DFS algorithm
-			int tLevel;
-			int bLevel;
-			int ALAPLevel;
-			bool isChecked=false;//Used to check to see if a node has already been added to the jobs map
+			int                   id; //the index it is held at in the map
+			T                     data; //data given to us by the user
+			double                cost; //cost in time give from user
+			std::vector<int>      vertices; //where this node points out ot list
+			std::vector<int>      verticesParent; //what points at this node list
+			color_t               color;//DFS: color for current node
+			color_t               colorBFS;//BFS: color for cuurent node / Probabily could just be color instead of a new variable...
+			int                   distanceBFS=-1;//BFS: distance form start node
+			int                   P;//used as parent index place holder for BFs and DFS
+			int                   start;//DFS: holds time when started in DFS algorithm
+			int                   finish;//DFS: holdstime when finished in DFS algorithm
+			int                   tLevel;
+			int                   bLevel;
+			int                   ALAPLevel;
+			bool                  isChecked=false;//Used to check to see if a node has already been added to the jobs map
+			bool                  done=false;//Checks to see if a node has been scedueled already
 
 			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
@@ -51,12 +52,34 @@ class Graph{
 			VertexStuff(){//Needed for map RB_tree
 			}
 		};
+
+		struct CPUStruct{
+			int start;
+			int finish=0;
+			int IDdone;// Holds the index to the node that this CPU/struct did
+
+			CPUStruct(){//Needed for rbtree
+				finish=0;
+				start=0;
+			}
+			CPUStruct(int s, int f, int i){
+				start=s;
+				finish=f;
+				IDdone=i;
+			}
+
+		};
+
+
+
+
 		int ID = 1;//ID couinter that the add vertex uses
 
 		int CP_Length;
 
 		std::map<int, VertexStuff> v;//main map that holds all nodes with their meta data
 		std::map<int,std::vector<int>> jobs;//Map of <BFSlevels, nodes in level>
+		std::map<int, std::vector<CPUStruct>> CPUs;//List of every CPU and its jobs it will do at what times
 
 		void PaddEdge(int,int);//Private addition of adding edge
 
@@ -65,9 +88,10 @@ class Graph{
 		void computeTLevel(); // Computes the T level of the graph
 		void computeBLevel(); // Computes the B level of the graph
 		void computeALAP(); // Computes the As Late As Possible level of the graph
-		void driver();
+
 
 	public:
+		void driver(int);
 		void JobLevelBFS();
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir

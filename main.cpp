@@ -173,10 +173,10 @@ int main(){
 	i.addVertex(5, 30);
 	i.addVertex(1, 9);
 	i.addVertex(6, 1);
-	i.addVertex(7, 2);
-	i.addVertex(8,100);
-	i.addEdge(7, 8);
-	i.addEdge(8, 5);
+	// i.addVertex(7, 2);
+	// i.addVertex(8,100);
+	// i.addEdge(7, 8);
+	// i.addEdge(8, 5);
 	i.addEdge(5, 6);
 	i.addEdge(2, 3);
 	i.addEdge(2, 5);
@@ -187,6 +187,15 @@ int main(){
 	i.printAnalytics();
 	std::cout<<std::endl;
 	i.JobLevelBFS();
+
+	i.addEdge(8, 6);
+	std::cout<<std::endl;
+	i.JobLevelBFS();
+
+	std::cout<<std::endl;
+
+	i.driver(1);
+
 
 /*
 	std::vector<std::pair<int, int>> yeet = i.topologicalSort();
