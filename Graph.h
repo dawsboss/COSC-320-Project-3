@@ -25,15 +25,16 @@ class Graph{
 			double cost; //cost in time give from user
 			std::vector<int> vertices; //where this node points out ot list
 			std::vector<int> verticesParent; //what points at this node list
-			color_t color;
-			color_t colorBFS;
-			int distanceBFS;
-			int P;
-			int start;
-			int finish;
+			color_t color;//DFS: color for current node
+			color_t colorBFS;//BFS: color for cuurent node / Probabily could just be color instead of a new variable...
+			int distanceBFS=-1;//BFS: distance form start node
+			int P;//used as parent index place holder for BFs and DFS
+			int start;//DFS: holds time when started in DFS algorithm
+			int finish;//DFS: holdstime when finished in DFS algorithm
 			int tLevel;
 			int bLevel;
 			int ALAPLevel;
+			bool isChecked=false;//Used to check to see if a node has already been added to the jobs map
 
 			VertexStuff(T d, double c, int i){//constructor for new edges
 				id = i;
@@ -55,6 +56,7 @@ class Graph{
 		int CP_Length;
 
 		std::map<int, VertexStuff> v;//main map that holds all nodes with their meta data
+		std::map<int,std::vector<int>> jobs;//Map of <BFSlevels, nodes in level>
 
 		void PaddEdge(int,int);//Private addition of adding edge
 
@@ -66,7 +68,7 @@ class Graph{
 		void driver();
 
 	public:
-		std::map<int,std::vector<int>> BFS(T B);
+		void JobLevelBFS();
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir
 		void initDIR(bool);//This will init dir to give in bool

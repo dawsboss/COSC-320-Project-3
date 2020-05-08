@@ -350,70 +350,64 @@ void Graph<T>::SCCDFS_Visit(int node){
 
 //BFS : This will return the BFS levels starting from the B node, a index for each level of the BFS with a voector for each level to hold all the indexs for that level
 template<class T>
-std::map<int,std::vector<int>> Graph<T>::BFS(T B){
-
-	std::map<int,std::vector<int>> rtn;
+void Graph<T>::JobLevelBFS(){
 	int farthest=0;
-
+	std::vector<int> start = findStarts();
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		v[i->first].colorBFS = WHITE;
-		v[i->first].distanceBFS = -1;
-		v[i->first].P=-1;
+		v[i->first].distanceBFS = 2147483646;
 	}
-	auto S=v.begin();
-	for(auto i=v.begin(); i!=v.end(); ++i){//change this to stwitch back to parameters as indexs
-		if(v[i->first].data == B){
-			S = i;
-			break;
-		}else{
+	for(auto st = start.begin(); st!=start.end(); ++st){
+		for(auto i=v.begin(); i!=v.end(); ++i){
+			v[i->first].colorBFS = WHITE;
+			v[i->first].P=-1;
+		}
+		auto S=v.end();
+		for(auto i=v.begin(); i!=v.end(); ++i){//change this to stwitch back to parameters as indexs
+			if(i->first == *st){
+				S = i;
+				break;
+			}
+		}
+		if(S==v.end()){
 			std::string s = "Entered node not valid";
 			throw s;
 		}
-	}
 
-	v[S->first].colorBFS = GREY;
-	v[S->first].distanceBFS = 0;
+		v[S->first].colorBFS = GREY;
+		v[S->first].distanceBFS = 0;
 
-	std::queue<int> q;
-	q.push(S->first);
-	while(!q.empty()){
-		int U = q.front();q.pop();
-		for(auto j=v[U].vertices.begin(); j!=v[U].vertices.end(); ++j){
-				std::cout<<"Node "<<U<<" edge: "<<*j<<std::endl;
-			if(v[*j].colorBFS == WHITE){
-				v[*j].colorBFS = GREY;
-				v[*j].distanceBFS = v[U].distanceBFS+1;
-				if(farthest < v[*j].distanceBFS)
-					farthest = v[*j].distanceBFS;
-				v[*j].P = U;
-				q.push(*j);
+		std::queue<int> q;
+		q.push(S->first);
+		while(!q.empty()){
+			int U = q.front();q.pop();
+			for(auto j=v[U].vertices.begin(); j!=v[U].vertices.end(); ++j){
+				if(v[*j].colorBFS == WHITE){
+					v[*j].colorBFS = GREY;
+					if(v[*j].distanceBFS > v[U].distanceBFS+1)
+						v[*j].distanceBFS = v[U].distanceBFS+1;
+					if(farthest < v[*j].distanceBFS)
+						farthest = v[*j].distanceBFS;
+					v[*j].P = U;
+					q.push(*j);
+				}
+				v[*j].colorBFS = BLACK;
 			}
-			v[*j].colorBFS = BLACK;
 		}
 	}
 
-	//std::cout<<"Farthest: "<<farthest<<std::endl;
 	for(int i=0; i<=farthest; i++){//Takes all calulated data and saves what nodes were in what level of distance form the starting node and returns them in a map listed above
-		rtn.insert(std::pair<int, std::vector<int>>(i, std::vector<int>()));
+		jobs.insert(std::pair<int, std::vector<int>>(i, std::vector<int>()));
 	}
 	for(auto i=v.begin(); i!=v.end(); ++i){
-		//std::cout<<"test: "<<v[i->first].distanceBFS<<" "<<i->first<<std::endl;
-		rtn[v[i->first].distanceBFS].push_back(i->first);
+		std::cout<<"Distance: "<<v[i->first].distanceBFS<<" at i->first: "<<i->first<<std::endl;
+		jobs[v[i->first].distanceBFS].push_back(i->first);
 	}
-
-	// std::cout<<"Starting at: "<<B<<std::endl;
-	// for(auto i=v.begin(); i!=v.end(); ++i){
-	// 	if(v[i->first].P == -1){
-	// 			std::cout<<"Node: "<<v[i->first].data<< " distance: "<<v[i->first].distanceBFS<< " parent: No Parents"<<std::endl;
-	// 	}else{
-	// 			std::cout<<"Node: "<<v[i->first].data<< " distance: "<<v[i->first].distanceBFS<< " parent: "<<v[v[i->first].P].data<<std::endl;
-	// 	}
-	// }
-	return rtn;
 }
 
 
 template<class T>
 void Graph<T>::driver(){
+	JobLevelBFS();
+	
 
 }
