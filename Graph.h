@@ -13,7 +13,9 @@ class Graph{
 	private:
 		bool dir=true;//T == Dirrected | F == UnDirrected
 		bool DFSneeded=false;//If DFS saved it correct or not True == needs update/ False == all good
-		int time=0;
+		int time1 = 0;//change time  to vector if want more than 2 CPU TODO
+		int time2 = 0;//driver
+		int time;//BFS and DFS
 		bool Acyclic=true;
 		bool DAG;
 		enum color_t{
@@ -54,13 +56,14 @@ class Graph{
 		};
 
 		struct CPUStruct{
-			int start;
+			int start=0;
 			int finish=0;
-			int IDdone;// Holds the index to the node that this CPU/struct did
+			int IDdone=-1;// Holds the index to the node that this CPU/struct did
 
 			CPUStruct(){//Needed for rbtree
 				finish=0;
 				start=0;
+				IDdone=-1;
 			}
 			CPUStruct(int s, int f, int i){
 				start=s;
@@ -88,6 +91,8 @@ class Graph{
 		void computeTLevel(); // Computes the T level of the graph
 		void computeBLevel(); // Computes the B level of the graph
 		void computeALAP(); // Computes the As Late As Possible level of the graph
+		int findMinTlvl(std::vector<int>);//Fins the smallest node tha tisn;t completed in a given vector/level std::vector<int>::iterator
+		int NextCPU(); //Finds the next CPU that will finish the earliest
 
 
 	public:
