@@ -174,7 +174,7 @@ int main(){
 	i.addVertex(1, 9);
 	i.addVertex(6, 1);
 	i.addVertex(7, 2);
-	i.addVertex(8,100);
+	i.addVertex(8,11);
 	i.addEdge(7, 8);
 	i.addEdge(8, 5);
 	i.addEdge(5, 6);
@@ -194,7 +194,7 @@ int main(){
 
 	std::cout<<std::endl;
 
-	i.driver(1);
+	i.printAnaCPU();
 
 
 /*

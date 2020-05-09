@@ -416,7 +416,7 @@ void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and di
 	}
 	for(auto i=CPUs.begin(); i!=CPUs.end(); ++i){
 		CPUs[i->first].push_back(CPUStruct());
-		std::cout<<"=CPUs[nextOpenCPU].back().finish "<<CPUs[i->first].back().finish<<std::endl;
+		//std::cout<<"=CPUs[nextOpenCPU].back().finish "<<CPUs[i->first].back().finish<<std::endl;
 	}
 
 	// for(auto i=jobs.begin(); i!=jobs.end(); ++i){
@@ -432,7 +432,7 @@ void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and di
 		bool isCPU1=true;
 		for(auto j=jobs[i->first].begin(); j!=jobs[i->first].end(); ++j){
 				int min = findMinTlvl(jobs[i->first]);//Finds the next node that shound be done in the current level
-				std::cout<<"min: "<<min<<std::endl;
+				//std::cout<<"min: "<<min<<std::endl;
 				int cpu = NextCPU();//Finds the index to the next available CPU
 
 				//time+=CPUs[cpu].back().finish;
@@ -448,9 +448,10 @@ void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and di
 				v[min].done = true;
 			}
 			if(isCPU1){//TODO this will make agap between BFS levels
-				time2=time1;
-			}else{
 				time1=time2;
+			}else{
+
+				time2=time1;
 			}
 
 		}
@@ -526,7 +527,7 @@ int Graph<T>::findMinTlvl(std::vector<int> vect){//std::vector<int>::iterator
 			minIndex = i;
 		}
 	}
-	std::cout<<"minIndex: "<<*minIndex<<std::endl;
+	//std::cout<<"minIndex: "<<*minIndex<<std::endl;
 	return *minIndex;
 }
 
@@ -534,10 +535,26 @@ template<class T>
 int Graph<T>::NextCPU(){
 	int nextOpenCPU = CPUs.begin()->first;
 	for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){
-		std::cout<<"	CPUs[nextOpenCPU].back().finish "<<CPUs[nextOpenCPU].back().finish<<" | CPUs[j->first].back().finish "<<CPUs[j->first].back().finish<<std::endl;
+		//std::cout<<"	CPUs[nextOpenCPU].back().finish "<<CPUs[nextOpenCPU].back().finish<<" | CPUs[j->first].back().finish "<<CPUs[j->first].back().finish<<std::endl;
 		if(CPUs[nextOpenCPU].back().finish > CPUs[j->first].back().finish){
 			nextOpenCPU = j->first;
 		}
 	}
 	return nextOpenCPU;
+}
+
+template<class T>
+void Graph<T>::printAnaCPU(){
+	driver(1);
+	std::cout << "Id\t" << "Data\t" << "CPU #\t" << "Start\t" << "Finish\t" << std::endl;
+	std::cout << "-----------------------------------------" << std::endl;
+	for (auto it = CPUs.begin(); it != CPUs.end(); ++it) {
+		for(auto i = CPUs[it->first].begin(); i!=CPUs[it->first].end(); ++i){
+			std::cout << i->IDdone << "\t" << v[i->IDdone].data << "\t" << it->first << "\t";
+			std::cout << i->start << "\t" << i->finish << std::endl;
+
+		}
+
+	}
+
 }

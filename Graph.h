@@ -117,6 +117,7 @@ class Graph{
 		void SCCDFS_Visit(int node);
 		void SCC();
 		void printAnalytics(); // Prints the Analytics of the graph into a data table structure
+		void printAnaCPU();
 };
 
 #include "Graph.cpp"
