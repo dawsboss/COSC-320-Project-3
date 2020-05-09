@@ -94,9 +94,14 @@ class Graph{
 		int findMinTlvl(std::vector<int>);//Fins the smallest node tha tisn;t completed in a given vector/level std::vector<int>::iterator
 		int NextCPU(); //Finds the next CPU that will finish the earliest
 
+		bool canBeDone(int);//Checks ot see if that all previous nodes to this have been done
+		int findMinTlvlV2(std::vector<int>, std::vector<int>);//This is for the driverV2 function. This will check both the current BFS level and the one below to see if there is something more efficient ot be doing
+
 
 	public:
 		void driver(int);
+		void driverV2(int);
+		void printAnaCPUV2();
 		void JobLevelBFS();
 
 		Graph();//This is the same as the Graph(bool) but it just doesn't init dir NOTE: This is extremely unsafe to use... if you do use it make sure you init bool dir

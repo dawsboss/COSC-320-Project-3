@@ -174,9 +174,9 @@ int main(){
 	i.addVertex(1, 9);
 	i.addVertex(6, 1);
 	i.addVertex(7, 2);
-	i.addVertex(8,11);
-	i.addEdge(7, 8);
-	i.addEdge(8, 5);
+	// i.addVertex(8,11);
+	i.addEdge(7, 5);
+	// i.addEdge(8, 5);
 	i.addEdge(5, 6);
 	i.addEdge(2, 3);
 	i.addEdge(2, 5);
@@ -195,6 +195,10 @@ int main(){
 	std::cout<<std::endl;
 
 	i.printAnaCPU();
+
+	std::cout<<std::endl;
+
+	i.printAnaCPUV2();
 
 
 /*

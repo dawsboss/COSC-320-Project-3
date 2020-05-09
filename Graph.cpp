@@ -416,48 +416,28 @@ void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and di
 	}
 	for(auto i=CPUs.begin(); i!=CPUs.end(); ++i){
 		CPUs[i->first].push_back(CPUStruct());
-		//std::cout<<"=CPUs[nextOpenCPU].back().finish "<<CPUs[i->first].back().finish<<std::endl;
 	}
-
-	// for(auto i=jobs.begin(); i!=jobs.end(); ++i){
-	// 	for(auto j=jobs[i->first].begin(); j!=jobs[i->first].end(); ++j){
-	// 		std::cout<<*j<<" ";
-	// 	}
-	// 	std::cout<<std::endl;
-	// }
-	// 2 7
-	// 3 1 5 8
-	// 6
 	for(auto i =jobs.begin(); i!=jobs.end(); ++i){
-		bool isCPU1=true;
 		for(auto j=jobs[i->first].begin(); j!=jobs[i->first].end(); ++j){
 				int min = findMinTlvl(jobs[i->first]);//Finds the next node that shound be done in the current level
-				//std::cout<<"min: "<<min<<std::endl;
 				int cpu = NextCPU();//Finds the index to the next available CPU
-
-				//time+=CPUs[cpu].back().finish;
 				if(cpu == 1){//if CPU 1 is doing the job
 					CPUs[cpu].push_back(CPUStruct(time1, time1+v[min].cost, min));
 					time1+=v[min].cost;
-					isCPU1=true;
 				}else{//If cpu 2 is doing the job
 					CPUs[cpu].push_back(CPUStruct(time2, time2+v[min].cost, min));
 					time2+=v[min].cost;
-					isCPU1=false;
 				}
 				v[min].done = true;
 			}
-			if(isCPU1){//TODO this will make agap between BFS levels
+			if(time1 <= time2){
 				time1=time2;
 			}else{
-
 				time2=time1;
 			}
 
 		}
-
-
-		for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){
+		for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){//Get rid of the inital s:0 f:0 times
 			CPUs[j->first].erase(CPUs[j->first].begin());
 		}
 		for(auto i=CPUs.begin(); i!=CPUs.end(); ++i){
@@ -468,37 +448,6 @@ void Graph<T>::driver(int numofCPU){//This will take the new jobs listing and di
 			std::cout<<std::endl;
 		}
 	}
-
-
-	// int smallestTlvl;
-	// int smallestTlvlIndex;
-	// for(auto i=jobs.begin(); i!=jobs.end(); ++i){
-	// 	for(auto w=jobs[i->first].begin(); w!=jobs[i->first].end(); ++w){
-	// 		smallestTlvl = v[*jobs[i->first].begin()].tLevel;
-	// 		smallestTlvlIndex = *jobs[i->first].begin();
-	// 		for(auto j=jobs[i->first].begin(); j!=jobs[i->first].end(); ++j){
-	// 			if(smallestTlvl > v[*j].tLevel || !v[*j].done){
-	// 				smallestTlvl = v[*j].tLevel;
-	// 				smallestTlvlIndex = v[*j].id;
-	// 			}
-	// 		}
-	// 		auto nextCPU = CPUs.begin();//assume that the next CPU will be the first, then lets check
-	// 		for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){//Assumes that what ever is being given to it must be done so finds the next CPU available
-	// 			std::cout<<"Working on: "<<i->first<<std::endl;
-	// 			std::cout<<"	nextCPU.finish: "<<nextCPU->second.back().finish<<" j.finish: "<<j->second.back().finish<<std::endl;
-	// 			if(nextCPU->second.back().finish > j->second.back().finish){
-	// 				std<<"	=	nextCPU: "<<nextCPU-><<" j: "<<j<<std::endl;
-	// 				nextCPU = j;
-	// 			}
-	// 		}
-	// 		std::cout<<"		finish: "<<v[smallestTlvlIndex].cost<<" ID: "<<smallestTlvlIndex<<std::endl;
-	// 		CPUs[nextCPU->first].push_back(CPUStruct(time,time+v[smallestTlvlIndex].cost,smallestTlvlIndex));//TODO fix time
-	// 		v[smallestTlvlIndex].done = true;
-	// 	}
-	// }
-	//
-
-
 
 
 template<class T>
@@ -552,9 +501,124 @@ void Graph<T>::printAnaCPU(){
 		for(auto i = CPUs[it->first].begin(); i!=CPUs[it->first].end(); ++i){
 			std::cout << i->IDdone << "\t" << v[i->IDdone].data << "\t" << it->first << "\t";
 			std::cout << i->start << "\t" << i->finish << std::endl;
-
 		}
+	}
+}
 
+
+
+
+template<class T>
+void Graph<T>::driverV2(int numofCPU){//This will take the new jobs listing and divide it to the number of CPU/Workers we have that the user tell us in the paremeter
+	time1=0;
+	time2=0;
+	computeTLevel();
+	for(auto i=v.begin(); i!=v.end(); ++i){//Assume everyhting from begfore was wrong
+		v[i->first].done = false;
+	}
+	JobLevelBFS();
+	CPUs.clear();//Assume all old CPU lists are longer valid
+	for(int i=1; i<=2; i++){
+		CPUs.insert(std::pair<int, std::vector<CPUStruct>>(i,std::vector<CPUStruct>()));// or get rid of this second loine and just make the first into:
+		//                               CPUs.insert(std::pair<int, std::vector<CPUStruct>>(i,std::vector<CPUStruct>({CPUStruct()})));
+	}
+	for(auto i=CPUs.begin(); i!=CPUs.end(); ++i){
+		CPUs[i->first].push_back(CPUStruct());
 	}
 
+
+	for(int i =0; i<jobs.size()-1; ++i){
+		for(auto j=jobs[i].begin(); j!=jobs[i].end(); ++j){
+			for(auto j=jobs[i+1].begin(); j!=jobs[i+1].end(); ++j){
+				int min = findMinTlvlV2(jobs[i], jobs[i+1]);
+				int cpu = NextCPU();
+				if(cpu == 1){//if CPU 1 is doing the job
+					CPUs[cpu].push_back(CPUStruct(time1, time1+v[min].cost, min));
+					time1+=v[min].cost;
+				}else{//If cpu 2 is doing the job
+					CPUs[cpu].push_back(CPUStruct(time2, time2+v[min].cost, min));
+					time2+=v[min].cost;
+				}
+				v[min].done = true;
+			}
+		}
+		if(time1 <= time2){
+			time1=time2;
+		}else{
+			time2=time1;
+		}
+	}
+
+
+	for(auto j=CPUs.begin(); j!=CPUs.end(); ++j){//Get rid of the inital s:0 f:0 times
+		CPUs[j->first].erase(CPUs[j->first].begin());
+	}
 }
+
+	template<class T>
+	bool Graph<T>::canBeDone(int index){//Checks to see if a give node is able ot be completed yet
+		for(auto i=v[index].verticesParent.begin(); i!=v[index].verticesParent.end(); ++i){
+			if(!i.done){
+				return false;
+			}
+		}
+		return true;
+	}
+
+
+	template<class T>
+	int Graph<T>::findMinTlvlV2(std::vector<int> vect, std::vector<int> vect2){//std::vector<int>::iterator
+		if(vect.begin() == vect.end() || vect2.begin() == vect2.end()){
+			std::string s = "Nothing vector";
+			throw s;
+		}
+		auto minIndex = vect.end();
+
+		for(auto i=vect.begin(); i!=vect.end(); ++i){
+			if(!v[*i].done){
+				minIndex = i;
+				break;
+			}
+		}
+		if(minIndex == vect.end()){//There is nothing to do lef inside of vect1
+			minIndex = vect2.end();
+			for(auto i=vect2.begin(); i!=vect2.end(); ++i){
+				if(!v[*i].done && canBeDone(*i)){
+					minIndex = i;
+					break;
+				}
+			}
+			if(minIndex == vect2.end()){
+				std::string s = "There were no nodes left to check";
+				throw s;
+			}
+			for(auto i=vect2.begin(); i!=vect2.end(); ++i){
+				if(v[*minIndex].tLevel > v[*i].tLevel && !v[*i].done && canBeDone(*i)){
+					minIndex = i;
+				}
+			}
+			return *minIndex;
+		}
+
+
+		for(auto i=vect.begin(); i!=vect.end(); ++i){
+			if(v[*minIndex].tLevel > v[*i].tLevel && !v[*i].done){
+				minIndex = i;
+			}
+		}
+		//std::cout<<"minIndex: "<<*minIndex<<std::endl;
+		return *minIndex;
+	}
+
+	template<class T>
+	void Graph<T>::printAnaCPUV2(){
+		driver(1);
+		std::cout << "Id\t" << "Data\t" << "CPU #\t" << "Start\t" << "Finish\t" << std::endl;
+		std::cout << "-----------------------------------------" << std::endl;
+		for (auto it = CPUs.begin(); it != CPUs.end(); ++it) {
+			for(auto i = CPUs[it->first].begin(); i!=CPUs[it->first].end(); ++i){
+				std::cout << i->IDdone << "\t" << v[i->IDdone].data << "\t" << it->first << "\t";
+				std::cout << i->start << "\t" << i->finish << std::endl;
+			}
+		}
+	}
