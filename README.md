@@ -30,29 +30,30 @@ This program will not actually take user input, this is just for testing purpose
 
 ## Output
 
-Id	Data	t-level	b-level	ALAP
------------------------------------------
-*All nodes with above data*
-    .
-    .
-    .
+**Id  Data  t-level  b-level  ALAP**<br />
+\-----------------------------------------<br />
+*All nodes with above data*<br />
+    .<br />
+    .<br />
+    .<br />
 
 
-start: *All nodes that are at the begining*
+start: *All nodes that are at the begining*<br />
 
-Distance: *Distance* at i->first: *Index*
-    .
-    .
-    .
+Distance: *Distance* at i->first: *Index*<br />
+    .<br />
+    .<br />
+    .<br />
 
-CPU 1 Completed: *Nodes completed by CPU1*
-CPU 2 Completed: *Nodes completed by CPU2*
-Id	Data	CPU#	Start	Finish
------------------------------------------
-*All nodes with above data*
-    .
-    .
-    .
+CPU 1 Completed: *Nodes completed by CPU1*<br />
+CPU 2 Completed: *Nodes completed by CPU2*<br />
+
+**Id	Data	CPU\#	Start	Finish **<br />
+\----------------------------------------- <br />
+*All nodes with above data*<br />
+    .<br />
+    .<br />
+    .<br />
 **Note:** There is a slight problem with printing out. If the data is to long it will displace the following statistics 
 
 ## Post-Project Analyzing
