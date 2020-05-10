@@ -11,7 +11,7 @@ This project you will work with a partner to learn about, implement, and documen
 *  be exposed to the genesis of a problem and its historical solutions
 *  practice communicating complicated material in computer science and applied mathematics
 
-TODO THIS BELOW NEEDS UPDATING===================================================
+
 
 ## How to run this program
 #### Project
@@ -26,32 +26,44 @@ Now that our code is complied and ready to execute call:
 ````
 ./main
 ````
-The actual input comes from once the prgram is running you w0ill have the opertunity to input a sentence into the console
+This program will not actually take user input, this is just for testing purposes (as of now).
 
 ## Output
 
-If there are any mis-spelled words the the out put will be:
-    "*Word*" was detected as misspelled, suggestions for a one letter replace:
-    *Suggestions*
-
-		Suggestion for a two letter replace:
-		*Suggestion*
-
-		.
-		.
-		.
+Id	Data	t-level	b-level	ALAP
+-----------------------------------------
+*All nodes with above data*
+    .
+    .
+    .
 
 
+start: *All nodes that are at the begining*
 
-Otherwise there was nothing spelled wrong and there will be no output!
+Distance: *Distance* at i->first: *Index*
+    .
+    .
+    .
+
+CPU 1 Completed: *Nodes completed by CPU1*
+CPU 2 Completed: *Nodes completed by CPU2*
+Id	Data	CPU#	Start	Finish
+-----------------------------------------
+*All nodes with above data*
+    .
+    .
+    .
+
 
 ## Post-Project Analyzing
 
 #### Approach
-I approached this problem with a sense of mobility. The actual main required only 3 lines of code. It requires you too initilizes then call a init function that will make a hash table with the given text documents dictionary. Finally you can call the autoCorrect function with the words that would would like to check. This makes it extremly easy for the user to implement the Dictionary class and makes the main really clean. Now saying this, the Dictionary relies on several libraries, so there are ups and downs.
+Our approach was to start by taking all the code form our previous labs that applied to this. This included the very basics for our now complete Graph class along with a  Makefile. We went from this starting point and slowly added more methods based on what we needed and found from our research. We quickly realized that this problem was not fully solved, we found several research a papers that applied and although they assisted they did not give us a definite algorithm. From this point we decided to take several ideas from several different research paper and come together all into one algorithm from our own design. This algorithm named "driver" would go from a modified BFS level to BFS level doing all nodes in the current level waiting till all nodes were done and then move to the next levels to come. This not only guaranteed that we would have all previous nodes done for the nodes below by one level but it also made some nasty edge cases. We will go on to explain this edge case in the **Deficiencies/Improvements** section.  
 
 #### Interesting function design
-The autoCorrect function is extremly interesting because it can take any type of strings and any length and is able to check each word.This allows for a very clean main, only draw back could be is if the user wants to change the print they will have to go to Dictionary.cpp
+1. The Graph class is all templated and as long as the data type has comparison and assignment operators it will be able to be put in this graph.
+2. Memory efficiency - Although we are sure there are better and more efficient ways of doing some of our algorithms the data it's self is held one of the best ways possible. Where once you give us data in a vertex that data next gets moved and other than the initial assignment that data is never moved. Our program has a master map sitting in the background so when we want to use some of the data or the data's meta-data we just have to have access to the index it is at in the main map. Once we have that we can access that vertex from anywhere without having to make any extra maps. We have a
+3. Expand ability - We left room for a quick upgrade so if you want to allow for more than just 2 CPUs then you are able to. The driving function has a int parameter and axs of right now that does not do anything but most loops do not depend on this hard coded 2 number so after a few fixes you can make a infinite number of CPUs possible.
 
 #### Deficiencies/Improvements
-With what I know now I would have liked to add a clean autoCorrect function so that if the user would have liked to change the output it would be easier to read and do so. I am sure there are also more efficient ways of doing the same thing with less moving of linked lists and I would have liked to explore these.
+Although we would get a answer seems correct, the algorithm would over compensated when it could have an opportunity to move down a level and leave the other CPUs in the previous level. In our testing of the code (main.cpp) we show this edge case off in the first example. We determined that although after much time of thinking we could get past this edge case but then there would just be infinitely more edge cases. This is about the time we discovered that the problem has not been fully solved and is also NP hard. We had a hunch through out coding and researching this that the problem had not been solved yet but the article telling us that it is NP hard solidified it.
