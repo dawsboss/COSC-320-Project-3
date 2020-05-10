@@ -1,5 +1,6 @@
 # COSC-320-Project-3
-This project you will work with a partner to learn about, implement, and document one interesting graph algorithm or data structure that was not covered during the course lecture. You will prepare a full typed report to describe the motivation for the topic, theoretical properties with some justification, and the results of your own implementation
+This project you will work with a partner to learn about, implement, and document one interesting graph algorithm or data structure that was not covered during the course lecture. You will prepare a full typed report to describe the motivation for the topic, theoretical properties with some justification, and the results of your own implementation<br />
+https://github.com/dawsboss/COSC-320-Project-3
 
 ### Grant Dawson and Ryan Rosiak
 
@@ -54,7 +55,7 @@ CPU 2 Completed: *Nodes completed by CPU2*<br />
     .<br />
     .<br />
     .<br />
-**Note:** There is a slight problem with printing out. If the data is to long it will displace the following statistics 
+**Note:** There is a slight problem with printing out. If the data is too long it will displace the following statistics 
 
 ## Post-Project Analyzing
 
